@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>ECHOSYSTEMS "hovering" — Rotation Pad</title>
+
+  <link href="https://vjs.zencdn.net/7.20.3/video-js.css" rel="stylesheet" />
+  <style>
+    body {
+      background: black;
+      color: white;
+      font-family: sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      user-select: none;
+    }
+    h1 {
+      text-align: center;
+      margin: 0 0 1rem 0;
+    }
+    button {
+  background: white;
+  color: black;
+  border: none;
+  padding: 1em 2em;
+  font-size: 1.2em;
+  cursor: pointer;
+  margin-bottom: 2rem;
+  border-radius: 12px; /* <-- added rounded corners */
+}
+
+    canvas {
+      border: 2px solid white;
+      border-radius: 50%;
+      background: #222;
+      cursor: crosshair;
+      margin-bottom: 1rem;
+    }
+    #spatialVideo {
+      width: 320px;
+      height: 180px;
+      margin-bottom: 1rem;
+    }
+
+  </style>
+
+  <script src="https://vjs.zencdn.net/7.20.3/video.min.js"></script>
+  <script src="hoast360.bundle.js"></script>
+</head>
+<body>
+  <h1>ECHOSYSTEMS<br><em>"hovering"</em></h1>
+  <button id="playButton">Play</button>
+  <canvas id="rotationPad" width="300" height="300"></canvas>
+
+  <video
+    id="spatialVideo"
+    class="video-js vjs-default-skin"
+    controls
+    preload="auto"
+    crossorigin="anonymous"
+    playsinline
+  ></video>
+
+  <script>
+    const playButton = document.getElementById("playButton");
+    const pad = document.getElementById("rotationPad");
+    const ctx = pad.getContext("2d");
+    let yaw = 0, pitch = 0;
+    let hoast360 = null;
+    let videojsPlayer = null;
+
+    function degToRad(deg) {
+      return deg * Math.PI / 180;
+    }
+
+    function drawPad(x = 0, y = 0) {
+      ctx.clearRect(0, 0, pad.width, pad.height);
+      const centerX = pad.width / 2;
+      const centerY = pad.height / 2;
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, 120, 0, 2 * Math.PI);
+      ctx.strokeStyle = 'white';
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(centerX + x, centerY + y, 10, 0, 2 * Math.PI);
+      ctx.fillStyle = 'white';
+      ctx.fill();
+    }
+
+    function handlePadInput(e) {
+      const rect = pad.getBoundingClientRect();
+      const x = e.clientX - rect.left - pad.width / 2;
+      const y = e.clientY - rect.top - pad.height / 2;
+
+      const maxRadius = 120;
+      const distance = Math.sqrt(x * x + y * y);
+      const clampedX = (distance > maxRadius) ? (x * maxRadius / distance) : x;
+      const clampedY = (distance > maxRadius) ? (y * maxRadius / distance) : y;
+
+      drawPad(clampedX, clampedY);
+
+      yaw = (clampedX / maxRadius) * 90;
+      pitch = (-clampedY / maxRadius) * 90;
+
+      console.log(`handlePadInput: yaw=${yaw.toFixed(2)}°, pitch=${pitch.toFixed(2)}°`);
+
+      if (hoast360) {
+        hoast360.setRotation(degToRad(yaw), degToRad(pitch), 0);
+        console.log('Rotation updated on hoast360');
+      }
+    }
+
+    async function initAndPlay() {
+      if (hoast360) {
+        hoast360.stop();
+        hoast360 = null;
+      }
+
+      if (!videojsPlayer) {
+        videojsPlayer = videojs('spatialVideo', {
+          controls: true,
+          autoplay: false,
+          preload: 'auto',
+          fluid: false,
+        });
+      }
+
+      videojsPlayer.src({ src: 'ambix_hovering_04.mp4', type: 'video/mp4' });
+
+      try {
+        await videojsPlayer.ready();
+
+        const nativeVideo = document.getElementById('spatialVideo');
+
+        await videojsPlayer.play();
+
+        await new Promise((resolve, reject) => {
+          if (nativeVideo.readyState >= 4) {
+            resolve();
+          } else {
+            nativeVideo.addEventListener('canplaythrough', () => resolve(), { once: true });
+            nativeVideo.addEventListener('error', (e) => reject(e), { once: true });
+          }
+        });
+
+        hoast360 = new HOAST360(nativeVideo);
+        hoast360.setDecodeMode("binaural");
+        hoast360.start();
+
+        // Initial rotation update
+        if (hoast360) {
+          hoast360.setRotation(degToRad(yaw), degToRad(pitch), 0);
+        }
+      } catch (e) {
+        console.error("Video play/init error:", e);
+        alert("Error playing video.");
+      }
+    }
+
+    playButton.addEventListener("click", () => {
+      initAndPlay();
+    });
+
+    pad.addEventListener("mousedown", e => {
+      handlePadInput(e);
+      pad.addEventListener("mousemove", handlePadInput);
+    });
+    document.addEventListener("mouseup", () => {
+      pad.removeEventListener("mousemove", handlePadInput);
+    });
+
+    drawPad();
+  </script>
+</body>
+</html>
