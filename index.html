@@ -1,124 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
- <title>ECHOSYSTEMS "hovering"</title>
- <meta charset="utf-8" />
- <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
- <link href="https://vjs.zencdn.net/7.20.3/video-js.css" rel="stylesheet" />
+ <!-- [Keep all existing <head> content exactly the same] -->
  <style>
- @font-face {
-   font-family: 'TsukimiRounded';
-   src: url('fonts/TsukimiRounded-Regular.ttf') format('truetype');
-   font-weight: 400;
- }
-
- body {
-   background-color: black;
-   color: white;
-   font-family: sans-serif;
-   margin: 0;
-   padding: 20px; /* Added padding to ensure content stays within view */
-   display: flex;
-   flex-direction: column;
-   align-items: center;
-   justify-content: flex-start; /* Changed from center to better control spacing */
-   min-height: 100vh;
-   text-align: center;
-   box-sizing: border-box; /* Ensures padding is included in height calculations */
- }
- h1 {
-   font-size: 3rem;
-   margin-bottom: 0;
-   font-family: 'TsukimiRounded', sans-serif;
-   font-weight: 400;
- }
- p {
-   font-size: 2rem;
-   margin-top: 0;
-   margin-bottom: 1rem;
-   font-style: normal;
-   font-family: 'Courier New', monospace;
- }
- .button-container {
-   display: flex;
-   gap: 1rem;
-   margin-bottom: 1rem;
- }
- button {
-   background: white;
-   color: black;
-   border: none;
-   padding: 0.75em 1.5em;
-   font-size: 1em;
-   cursor: pointer;
-   border-radius: 10px;
-   font-family: 'Courier New', monospace;
- }
- #hoast360-player {
-   width: 700px;
-   max-width: 85vw;
-   height: 350px; /* Maintains 2:1 aspect ratio */
-   max-height: 45vh; /* Reduced to prevent scrolling */
-   position: relative;
-   border: 1px solid white;
-   margin: 0 auto;
- }
- #hoast360-player canvas {
-   max-width: 100%;
-   height: auto;
-   display: block;
-   margin: 0 auto;
- }
-
- /* Responsive adjustments */
- @media (max-height: 700px) {
-   h1 { font-size: 2.5rem; }
-   p { font-size: 1.75rem; }
-   #hoast360-player {
-     height: 300px;
-     max-height: 40vh;
-   }
- }
-</style>
+   /* [Keep all existing CSS exactly the same] */
+ </style>
 </head>
 <body>
- <h1>ECHOSYSTEMS</h1>
- <p>"hovering"</p>
- <div class="button-container">
-   <button onclick="init()">Load</button>
-   <button onclick="stop()">Stop</button>
- </div>
- <video-js
-   id="hoast360-player"
-   class="video-js vjs-fluid vjs-big-play-centered"
-   controls
-   preload="auto"
-   crossorigin="anonymous"
-   data-setup="{}"
- >
-   <p class="vjs-no-js">
-     To view this video please enable JavaScript, and consider upgrading to a web browser that
-     <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>.
-   </p>
- </video-js>
+ <!-- [Keep all existing HTML exactly the same until the script] -->
+
  <script src="./dist/hoast360.bundle.js"></script>
  <script>
    var hoast360 = new HOAST360();
+   
    function init() {
-     // Google Drive media files
-     var mediaFiles = {
-       "3OA_hovering.webm": "https://drive.google.com/uc?export=download&id=1ZHUyBAeyDYcSfC1J7Y933mfwsil8RLQg",
-       "na_hovering.webm": "https://drive.google.com/uc?export=download&id=1YMA7WUZVxa9X5QAoCxjf9A5lTtvBj3Nn",
-       "audio.mpd": "https://drive.google.com/uc?export=download&id=1BUBnGljtqZ-N6_Dduep6O2aRqV56i9_W",
-       "video.mpd": "https://drive.google.com/uc?export=download&id=1uDWm64lMdx4wY8tvnBT6L9uK5mQ1-Q5C"
+     // Create a virtual directory structure for HOAST360
+     var virtualMediaFolder = {
+       "3OA_hovering.webm": "https://drive.google.com/file/d/1ZHUyBAeyDYcSfC1J7Y933mfwsil8RLQg/preview",
+       "na_hovering.webm": "https://drive.google.com/file/d/1YMA7WUZVxa9X5QAoCxjf9A5lTtvBj3Nn/preview",
+       "audio.mpd": "https://drive.google.com/file/d/1BUBnGljtqZ-N6_Dduep6O2aRqV56i9_W/preview",
+       "video.mpd": "https://drive.google.com/file/d/1uDWm64lMdx4wY8tvnBT6L9uK5mQ1-Q5C/preview"
      };
 
-     // Initialize with Google Drive URLs
-     hoast360.initialize(mediaFiles, "irs/", 4);
+     // Initialize with a proxy loader
+     hoast360.initialize(virtualMediaFolder, "irs/", 4);
+     
+     // Fallback: If still not working, try this alternative after 2 seconds
+     setTimeout(() => {
+       if (!document.querySelector('#hoast360-player video')) {
+         console.warn("Using fallback load method");
+         hoast360.load([
+           "https://drive.google.com/file/d/1ZHUyBAeyDYcSfC1J7Y933mfwsil8RLQg/preview",
+           "https://drive.google.com/file/d/1YMA7WUZVxa9X5QAoCxjf9A5lTtvBj3Nn/preview"
+         ]);
+       }
+     }, 2000);
    }
+   
    function stop() {
      hoast360.reset();
    }
+   
+   // Debugging helper
+   window.addEventListener('hoast360-error', (e) => {
+     console.error("HOAST360 Error:", e.detail);
+   });
  </script>
 </body>
 </html>
