@@ -105,7 +105,16 @@
  <script>
    var hoast360 = new HOAST360();
    function init() {
-     hoast360.initialize("media/hovering/", "irs/", 4);
+     // Google Drive media files
+     var mediaFiles = {
+       "3OA_hovering.webm": "https://drive.google.com/uc?export=download&id=1ZHUyBAeyDYcSfC1J7Y933mfwsil8RLQg",
+       "na_hovering.webm": "https://drive.google.com/uc?export=download&id=1YMA7WUZVxa9X5QAoCxjf9A5lTtvBj3Nn",
+       "audio.mpd": "https://drive.google.com/uc?export=download&id=1BUBnGljtqZ-N6_Dduep6O2aRqV56i9_W",
+       "video.mpd": "https://drive.google.com/uc?export=download&id=1uDWm64lMdx4wY8tvnBT6L9uK5mQ1-Q5C"
+     };
+
+     // Initialize with Google Drive URLs
+     hoast360.initialize(mediaFiles, "irs/", 4);
    }
    function stop() {
      hoast360.reset();
