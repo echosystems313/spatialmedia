@@ -101,8 +101,8 @@
  <script src="./dist/hoast360.bundle.js"></script>
  <script>
    var hoast360 = new HOAST360();
-
-   // Archive.org URLs for your media files - using CORS-friendly ia URLs
+   
+   // Archive.org URLs for your media files - direct URLs since we're on GitHub Pages
    const MEDIA_URLS = {
      videoFile: 'https://ia801304.us.archive.org/2/items/ds-store_20250519/media/hovering/na_hovering.webm',
      audioFile: 'https://ia601304.us.archive.org/2/items/ds-store_20250519/media/hovering/3OA_hovering.webm',
@@ -110,7 +110,7 @@
      audioMpd: 'https://ia601304.us.archive.org/2/items/ds-store_20250519/media/hovering/audio.mpd',
      basePath: 'https://ia801304.us.archive.org/2/items/ds-store_20250519/'
    };
-
+   
    function init() {
      console.log("=== HOAST360 Debug Info ===");
      console.log("typeof HOAST360:", typeof HOAST360);
@@ -130,80 +130,48 @@
      console.log("=== Attempting HOAST360 initialization with Archive.org URLs ===");
 
      try {
-       // Method 1: Try with MPD files (most likely for DASH)
-       console.log("Trying with MPD files...");
-       hoast360.initialize(MEDIA_URLS.videoMpd, MEDIA_URLS.audioMpd);
-       console.log("MPD initialization succeeded");
+       // Method 1: Try the way HOAST360 expects - likely just the media name and base path
+       console.log("Trying with media name and base path...");
+       hoast360.initialize("hovering", "https://ia801304.us.archive.org/2/items/ds-store_20250519/media/");
+       console.log("Media name + base path initialization succeeded");
 
-     } catch (mpdError) {
-       console.error("MPD initialization failed:", mpdError.message);
+     } catch (namePathError) {
+       console.error("Media name + base path failed:", namePathError.message);
 
        try {
-         // Method 2: Try with direct video/audio files
-         console.log("Trying with direct media files...");
-         hoast360.initialize(MEDIA_URLS.videoFile, MEDIA_URLS.audioFile);
-         console.log("Direct media initialization succeeded");
+         // Method 2: Try with just the folder name
+         console.log("Trying with just folder name...");
+         hoast360.initialize("hovering");
+         console.log("Folder name initialization succeeded");
 
-       } catch (directError) {
-         console.error("Direct media initialization failed:", directError.message);
+       } catch (folderError) {
+         console.error("Folder name initialization failed:", folderError.message);
 
          try {
-           // Method 3: Try with configuration object
-           console.log("Trying with configuration object...");
-           hoast360.initialize({
-             video: MEDIA_URLS.videoFile,
-             audio: MEDIA_URLS.audioFile,
-             videoMpd: MEDIA_URLS.videoMpd,
-             audioMpd: MEDIA_URLS.audioMpd,
-             basePath: MEDIA_URLS.basePath
-           });
-           console.log("Configuration object initialization succeeded");
+           // Method 3: Try with direct video file URL as string
+           console.log("Trying with direct video URL as string...");
+           hoast360.initialize(MEDIA_URLS.videoFile);
+           console.log("Direct video URL initialization succeeded");
 
-         } catch (configError) {
-           console.error("Configuration object initialization failed:", configError.message);
+         } catch (videoError) {
+           console.error("Direct video URL failed:", videoError.message);
 
            try {
-             // Method 4: Try with player element and URLs
-             console.log("Trying with player element...");
-             const playerElement = document.getElementById('hoast360-player');
-             hoast360.initialize(playerElement, MEDIA_URLS.videoMpd, MEDIA_URLS.audioMpd);
-             console.log("Player element initialization succeeded");
+             // Method 4: Try MPD files as strings
+             console.log("Trying with MPD files as strings...");
+             hoast360.initialize(MEDIA_URLS.videoMpd, MEDIA_URLS.audioMpd);
+             console.log("MPD files initialization succeeded");
 
-           } catch (playerError) {
-             console.error("Player element initialization failed:", playerError.message);
-
-             try {
-               // Method 5: Try overriding media path
-               console.log("Trying with path override...");
-               hoast360.initialize("hovering", MEDIA_URLS.basePath);
-               console.log("Path override initialization succeeded");
-
-             } catch (pathError) {
-               console.error("Path override initialization failed:", pathError.message);
-
-               try {
-                 // Method 6: Try with individual parameters
-                 console.log("Trying with individual parameters...");
-                 hoast360.initialize(
-                   "hovering",
-                   MEDIA_URLS.basePath,
-                   MEDIA_URLS.videoFile,
-                   MEDIA_URLS.audioFile
-                 );
-                 console.log("Individual parameters initialization succeeded");
-
-               } catch (individualError) {
-                 console.error("Individual parameters initialization failed:", individualError.message);
-                 console.error("=== All initialization methods failed ===");
-                 console.error("Please check HOAST360 documentation for correct parameter format");
-               }
-             }
+           } catch (mpdError) {
+             console.error("MPD files initialization failed:", mpdError.message);
+             console.error("=== All initialization methods failed ===");
+             console.error("HOAST360 expects different parameters than we're providing");
            }
          }
        }
      }
    }
-
+   
    function stop() {
      try {
        hoast360.reset();
