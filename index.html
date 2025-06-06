@@ -1,185 +1,130 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
- <title>ECHOSYSTEMS "hovering"</title>
- <meta charset="utf-8" />
- <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
- <link href="https://vjs.zencdn.net/7.20.3/video-js.css" rel="stylesheet" />
- <style>
- @font-face {
-   font-family: 'TsukimiRounded';
-   src: url('fonts/TsukimiRounded-Regular.ttf') format('truetype');
-   font-weight: 400;
- }
- body {
-   background-color: black;
-   color: white;
-   font-family: sans-serif;
-   margin: 0;
-   padding: 20px;
-   display: flex;
-   flex-direction: column;
-   align-items: center;
-   justify-content: flex-start;
-   min-height: 100vh;
-   text-align: center;
-   box-sizing: border-box;
- }
- h1 {
-   font-size: 3rem;
-   margin-bottom: 0;
-   font-family: 'TsukimiRounded', sans-serif;
-   font-weight: 400;
- }
- p {
-   font-size: 2rem;
-   margin-top: 0;
-   margin-bottom: 1rem;
-   font-style: normal;
-   font-family: 'Courier New', monospace;
- }
- .button-container {
-   display: flex;
-   gap: 1rem;
-   margin-bottom: 1rem;
- }
- button {
-   background: white;
-   color: black;
-   border: none;
-   padding: 0.75em 1.5em;
-   font-size: 1em;
-   cursor: pointer;
-   border-radius: 10px;
-   font-family: 'Courier New', monospace;
- }
- #hoast360-player {
-   width: 700px;
-   max-width: 85vw;
-   height: 350px;
-   max-height: 45vh;
-   position: relative;
-   border: 1px solid white;
-   margin: 0 auto;
- }
- #hoast360-player canvas {
-   max-width: 100%;
-   height: auto;
-   display: block;
-   margin: 0 auto;
- }
- @media (max-height: 700px) {
-   h1 { font-size: 2.5rem; }
-   p { font-size: 1.75rem; }
-   #hoast360-player {
-     height: 300px;
-     max-height: 40vh;
-   }
- }
-</style>
+  <title>ECHOSYSTEMS "hovering"</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <link href="https://vjs.zencdn.net/7.20.3/video-js.css" rel="stylesheet" />
+  <style>
+    @font-face {
+      font-family: 'TsukimiRounded';
+      src: url('fonts/TsukimiRounded-Regular.ttf') format('truetype');
+      font-weight: 400;
+    }
+    body {
+      background-color: black;
+      color: white;
+      font-family: sans-serif;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+      text-align: center;
+      box-sizing: border-box;
+    }
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 0;
+      font-family: 'TsukimiRounded', sans-serif;
+      font-weight: 400;
+    }
+    p {
+      font-size: 2rem;
+      margin-top: 0;
+      margin-bottom: 1rem;
+      font-style: normal;
+      font-family: 'Courier New', monospace;
+    }
+    .button-container {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    button {
+      background: white;
+      color: black;
+      border: none;
+      padding: 0.75em 1.5em;
+      font-size: 1em;
+      cursor: pointer;
+      border-radius: 10px;
+      font-family: 'Courier New', monospace;
+    }
+    #hoast360-player {
+      width: 700px;
+      max-width: 85vw;
+      height: 350px;
+      max-height: 45vh;
+      position: relative;
+      border: 1px solid white;
+      margin: 0 auto;
+    }
+    #hoast360-player canvas {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin: 0 auto;
+    }
+    @media (max-height: 700px) {
+      h1 { font-size: 2.5rem; }
+      p { font-size: 1.75rem; }
+      #hoast360-player {
+        height: 300px;
+        max-height: 40vh;
+      }
+    }
+  </style>
 </head>
 <body>
- <h1>ECHOSYSTEMS</h1>
- <p>"hovering"</p>
- <div class="button-container">
-   <button onclick="init()">Load</button>
-   <button onclick="stop()">Stop</button>
- </div>
- <video-js
-   id="hoast360-player"
-   class="video-js vjs-fluid vjs-big-play-centered"
-   controls
-   preload="auto"
-   crossorigin="anonymous"
-   data-setup="{}"
- >
-   <p class="vjs-no-js">
-     To view this video please enable JavaScript, and consider upgrading to a web browser that
-     <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>.
-   </p>
- </video-js>
- <script src="./dist/hoast360.bundle.js"></script>
- <script>
-   var hoast360 = new HOAST360();
-   
-   // Cloudflare R2 URLs for your media files
-   const MEDIA_URLS = {
-     videoFile: 'https://pub-50ad6c6851e94dadbf5a2004fd002705.r2.dev/na_hovering.webm',
-     audioFile: 'https://pub-50ad6c6851e94dadbf5a2004fd002705.r2.dev/3OA_hovering.webm',
-     videoMpd: 'https://pub-50ad6c6851e94dadbf5a2004fd002705.r2.dev/video.mpd',
-     audioMpd: 'https://pub-50ad6c6851e94dadbf5a2004fd002705.r2.dev/audio.mpd',
-     basePath: 'https://pub-50ad6c6851e94dadbf5a2004fd002705.r2.dev/'
-   };
-   
-   function init() {
-     console.log("=== HOAST360 Debug Info ===");
-     console.log("typeof HOAST360:", typeof HOAST360);
-     console.log("HOAST360 constructor:", HOAST360);
-     console.log("hoast360 instance:", hoast360);
-     console.log("hoast360.initialize:", typeof hoast360.initialize);
-     console.log("Media URLs:", MEDIA_URLS);
+  <h1>ECHOSYSTEMS</h1>
+  <p>"hovering"</p>
+  <div class="button-container">
+    <button onclick="init()">Load</button>
+    <button onclick="stop()">Stop</button>
+  </div>
+  <video-js
+    id="hoast360-player"
+    class="video-js vjs-fluid vjs-big-play-centered"
+    controls
+    preload="auto"
+    crossorigin="anonymous"
+    data-setup="{}"
+  >
+    <p class="vjs-no-js">
+      To view this video please enable JavaScript, and consider upgrading to a web browser that
+      <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>.
+    </p>
+  </video-js>
 
-     if (typeof hoast360.initialize === 'function') {
-       console.log("initialize method exists");
-       console.log("Function signature:", hoast360.initialize.toString().substring(0, 200));
-     } else {
-       console.error("initialize method is missing!");
-       return;
-     }
+  <script src="./dist/hoast360.bundle.js"></script>
+  <script>
+    const hoast360 = new HOAST360();
 
-     console.log("=== Attempting HOAST360 initialization with Cloudflare R2 URLs ===");
+    const MEDIA_BASE = 'https://pub-50ad6c6851e94dadbf5a2004fd002705.r2.dev/';
 
-     try {
-       // Method 1: Try the way HOAST360 expects - likely just the media name and base path
-       console.log("Trying with media name and base path...");
-       hoast360.initialize("hovering", MEDIA_URLS.basePath);
-       console.log("Media name + base path initialization succeeded");
+    function init() {
+      console.log("Initializing HOAST360 with R2 media...");
 
-     } catch (namePathError) {
-       console.error("Media name + base path failed:", namePathError.message);
+      try {
+        hoast360.initialize("hovering", MEDIA_BASE);
+        console.log("HOAST360 initialized successfully with Cloudflare R2.");
+      } catch (err) {
+        console.error("HOAST360 initialization failed:", err.message);
+      }
+    }
 
-       try {
-         // Method 2: Try with just the folder name
-         console.log("Trying with just folder name...");
-         hoast360.initialize("hovering");
-         console.log("Folder name initialization succeeded");
-
-       } catch (folderError) {
-         console.error("Folder name initialization failed:", folderError.message);
-
-         try {
-           // Method 3: Try with direct video file URL as string
-           console.log("Trying with direct video URL as string...");
-           hoast360.initialize(MEDIA_URLS.videoFile);
-           console.log("Direct video URL initialization succeeded");
-
-         } catch (videoError) {
-           console.error("Direct video URL failed:", videoError.message);
-
-           try {
-             // Method 4: Try MPD files as strings
-             console.log("Trying with MPD files as strings...");
-             hoast360.initialize(MEDIA_URLS.videoMpd, MEDIA_URLS.audioMpd);
-             console.log("MPD files initialization succeeded");
-
-           } catch (mpdError) {
-             console.error("MPD files initialization failed:", mpdError.message);
-             console.error("=== All initialization methods failed ===");
-             console.error("HOAST360 expects different parameters than we're providing");
-           }
-         }
-       }
-     }
-   }
-   
-   function stop() {
-     try {
-       hoast360.reset();
-       console.log("HOAST360 reset successfully");
-     } catch (error) {
-       console.error("HOAST360 reset failed:", error.message);
-     }
-   }
- </script>
+    function stop() {
+      try {
+        hoast360.reset();
+        console.log("HOAST360 reset successfully.");
+      } catch (err) {
+        console.error("HOAST360 reset failed:", err.message);
+      }
+    }
+  </script>
 </body>
 </html>
+
