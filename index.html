@@ -102,13 +102,13 @@
  <script>
    var hoast360 = new HOAST360();
    
-   // Archive.org URLs for your media files - direct URLs since we're on GitHub Pages
+   // Cloudflare R2 URLs for your media files
    const MEDIA_URLS = {
-     videoFile: 'https://ia801304.us.archive.org/2/items/ds-store_20250519/media/hovering/na_hovering.webm',
-     audioFile: 'https://ia601304.us.archive.org/2/items/ds-store_20250519/media/hovering/3OA_hovering.webm',
-     videoMpd: 'https://ia801304.us.archive.org/2/items/ds-store_20250519/media/hovering/video.mpd',
-     audioMpd: 'https://ia601304.us.archive.org/2/items/ds-store_20250519/media/hovering/audio.mpd',
-     basePath: 'https://ia801304.us.archive.org/2/items/ds-store_20250519/'
+     videoFile: 'https://pub-50ad6c6851e94dadbf5a2004fd002705.r2.dev/na_hovering.webm',
+     audioFile: 'https://pub-50ad6c6851e94dadbf5a2004fd002705.r2.dev/3OA_hovering.webm',
+     videoMpd: 'https://pub-50ad6c6851e94dadbf5a2004fd002705.r2.dev/video.mpd',
+     audioMpd: 'https://pub-50ad6c6851e94dadbf5a2004fd002705.r2.dev/audio.mpd',
+     basePath: 'https://pub-50ad6c6851e94dadbf5a2004fd002705.r2.dev/'
    };
    
    function init() {
@@ -127,12 +127,12 @@
        return;
      }
 
-     console.log("=== Attempting HOAST360 initialization with Archive.org URLs ===");
+     console.log("=== Attempting HOAST360 initialization with Cloudflare R2 URLs ===");
 
      try {
        // Method 1: Try the way HOAST360 expects - likely just the media name and base path
        console.log("Trying with media name and base path...");
-       hoast360.initialize("hovering", "https://ia801304.us.archive.org/2/items/ds-store_20250519/media/");
+       hoast360.initialize("hovering", MEDIA_URLS.basePath);
        console.log("Media name + base path initialization succeeded");
 
      } catch (namePathError) {
