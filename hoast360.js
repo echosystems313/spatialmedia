@@ -227,6 +227,11 @@ export class HOAST360 {
 
     _setupVideo() {
         this.videoPlayer.xr().camera.rotation.order = 'YZX'; // in THREE Y is vertical axis! -> set to yaw-pitch-roll
+        
+         // Add these lines here to zoom all the way out:
+        this.videoPlayer.xr().camera.fov = 100;
+        this.videoPlayer.xr().camera.updateProjectionMatrix();
+     
         let vidControls = this.videoPlayer.xr().controls3d;
         vidControls.orbit.minDistance = -700;
         vidControls.orbit.maxDistance = 200;
