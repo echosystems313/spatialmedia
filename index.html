@@ -105,7 +105,9 @@
  <script>
    var hoast360 = new HOAST360();
    function init() {
-     hoast360.initialize("https://pub-50ad6c6851e94dadbf5a2004fd002705.r2.dev/hovering/", "irs/", 4);
+     const MEDIA_URL = "https://pub-50ad6c6851e94dadbf5a2004fd002705.r2.dev/hovering/";
+     const IR_PATH = "irs/";
+     hoast360.initialize(MEDIA_URL, IR_PATH, 4);
    }
    function stop() {
      hoast360.reset();
