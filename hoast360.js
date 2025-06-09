@@ -68,13 +68,12 @@ export class HOAST360 {
         console.log(this.context);
 
         if (isMobileTabletVRDevice()) {
-            this.zoomEnabled = false; // disable zoom on mobile and VR devices to improve efficiency
+            this.zoomEnabled = false;
             console.log('detected mobile device: zoom disabled');
         }
-            
+
         this.playbackEventHandler = new PlaybackEventHandler(this.context);
 
-        // create as many audio players as we need for max order
         this.audioElement = new Audio();
         if (this.audioElement.canPlayType('audio/ogg; codecs="opus"') === '') {
             this.opusSupport = false;
@@ -110,17 +109,17 @@ export class HOAST360 {
         this.irUrl = newIrUrl;
         this._setOrderDependentVariables();
 
-        if (this.mediaUrl.includes(".mpd")) { // in this case audio and video are inside the same mpd
+        if (this.mediaUrl.includes(".mpd")) {
             if (!this.sourceNode)
                 this.sourceNode = this.context.createMediaElementSource(this.videoPlayer.tech({ IWillNotUseThisInPlugins: true }).el());
-            
+
             this.videoPlayer.src({ type: 'application/dash+xml', src: this.mediaUrl });
             this.audioPlayer = null;
-        } else { // load audio and video from separate mpds
+        } else {
             this.audioPlayer = dashjs.MediaPlayer().create();
             if (!this.sourceNode)
                 this.sourceNode = this.context.createMediaElementSource(this.audioElement);
-                
+
             this.videoPlayer.src({ type: 'application/dash+xml', src: this.mediaUrl + 'video.mpd' });
             this.audioPlayer.initialize(this.audioElement);
             this.audioPlayer.setAutoPlay(false);
@@ -131,9 +130,14 @@ export class HOAST360 {
 
         this.videoPlayer.xr().on("initialized", function () {
             console.log("xr initialized");
+
+            // Override camera FOV and update
+            const camera = scope.videoPlayer.xr().camera;
+            camera.fov = 100;
+            camera.updateProjectionMatrix();
+
             scope._startSetup();
 
-            // playback event handler is only needed if we have separate audio and video players
             if (scope.audioPlayer)
                 scope.playbackEventHandler.initialize(scope.videoPlayer, scope.audioPlayer);
         });
@@ -152,7 +156,7 @@ export class HOAST360 {
         this._disconnectAudio();
         this.videoPlayer.xr().reset();
         this.videoPlayer.dash.mediaPlayer.reset();
-        this.videoPlayer.reset(); // this triggers an error "failed to remove source buffer from media source", but seems to work anyway
+        this.videoPlayer.reset();
         if (this.audioPlayer)
             this.audioPlayer.reset();
     }
@@ -175,11 +179,9 @@ export class HOAST360 {
     _setupAudio() {
         let scope = this;
 
-        // initialize ambisonic rotator
         this.rotator = new HOASTRotator(this.context, this.order);
         console.log(this.rotator);
 
-        // initialize matrix multiplier (for now use always 4th order as zoom matrix is in 4th order format)
         this.multiplier = new MatrixMultiplier(this.context, 4);
         console.log(this.multiplier);
 
@@ -208,17 +210,15 @@ export class HOAST360 {
         });
 
         this.sourceNode.channelCount = this.numCh;
-
         this.sourceNode.connect(this.rotator.in);
 
         if (this.zoomEnabled) {
             this.rotator.out.connect(this.multiplier.in);
             this.multiplier.out.connect(this.decoder.in);
-        }
-        else {
+        } else {
             this.rotator.out.connect(this.decoder.in);
         }
-        
+
         this.decoder.out.connect(this.masterGain);
         this.masterGain.connect(this.context.destination);
 
@@ -226,19 +226,15 @@ export class HOAST360 {
     }
 
     _setupVideo() {
-        this.videoPlayer.xr().camera.rotation.order = 'YZX'; // in THREE Y is vertical axis! -> set to yaw-pitch-roll
-        
-         // Add these lines here to zoom all the way out:
+        this.videoPlayer.xr().camera.rotation.order = 'YZX';
         this.videoPlayer.xr().camera.fov = 100;
         this.videoPlayer.xr().camera.updateProjectionMatrix();
-     
+
         let vidControls = this.videoPlayer.xr().controls3d;
         vidControls.orbit.minDistance = -700;
         vidControls.orbit.maxDistance = 200;
 
         let scope = this;
-        // this.controls3d.orbit.on( .. ) does not work for custom events!
-        // view change
         vidControls.orbit.addEventListener("change", function () {
             if (scope.xrActive)
                 return;
@@ -246,7 +242,6 @@ export class HOAST360 {
             scope.rotator.updateRotationFromCamera(scope.videoPlayer.xr().camera.matrixWorld.elements);
         });
 
-        // view change if HMD is used
         this.videoPlayer.xr().on("xrCameraUpdate", function () {
             if (!scope.xrActive)
                 return;
@@ -255,7 +250,7 @@ export class HOAST360 {
         });
 
         if (this.zoomEnabled) {
-            vidControls.orbit.addEventListener("zoom", function () { // zoom change
+            vidControls.orbit.addEventListener("zoom", function () {
                 scope._updateZoom();
             });
         }
@@ -295,10 +290,10 @@ export class HOAST360 {
         let getUrl = window.location;
         let base_url = getUrl.protocol + "//" + getUrl.host + "/"
         this.numCh = (this.order + 1) * (this.order + 1);
-        
-        if (this.irUrl.includes("://")) // protocol already included
+
+        if (this.irUrl.includes("://"))
             this.irs = this.irUrl + 'hoast_o' + this.order + '.wav';
         else
-            this.irs = base_url + this.irUrl + 'hoast_o' + this.order + '.wav';            
+            this.irs = base_url + this.irUrl + 'hoast_o' + this.order + '.wav';
     }
 }
