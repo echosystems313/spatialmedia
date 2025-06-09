@@ -106,7 +106,7 @@
    var hoast360 = new HOAST360();
    function init() {
      const MEDIA_URL = "https://pub-50ad6c6851e94dadbf5a2004fd002705.r2.dev/hovering/";
-     const IR_PATH = "irs/";  // <-- updated here: no leading slash
+     const IR_PATH = "/spatialmedia/irs/";  // <-- updated to absolute path for GitHub Pages
      hoast360.initialize(MEDIA_URL, IR_PATH, 4);
    }
    function stop() {
