@@ -228,16 +228,27 @@ export class HOAST360 {
     _setupVideo() {
         this.videoPlayer.xr().camera.rotation.order = 'YZX'; // in THREE Y is vertical axis! -> set to yaw-pitch-roll
         
-         // Add these lines here to zoom all the way out:
-        // this.videoPlayer.xr().camera.fov = 100;
-        // this.videoPlayer.xr().camera.updateProjectionMatrix();
+        // Alternative: Set camera FOV to zoom all the way out
+        this.videoPlayer.xr().camera.fov = 100;
+        this.videoPlayer.xr().camera.updateProjectionMatrix();
      
         let vidControls = this.videoPlayer.xr().controls3d;
         vidControls.orbit.minDistance = -700;
         vidControls.orbit.maxDistance = 200;
 
-        // Set initial zoom level to fully zoomed out
-        vidControls.orbit.currentDistance = vidControls.orbit.minDistance; // Fully zoomed out
+        // Set initial zoom level to fully zoomed out - try multiple approaches
+        // Approach 1: Set immediately
+        vidControls.orbit.currentDistance = vidControls.orbit.minDistance;
+        
+        // Approach 2: Set after a short delay to ensure controls are ready
+        setTimeout(() => {
+            vidControls.orbit.currentDistance = vidControls.orbit.minDistance;
+        }, 100);
+        
+        // Approach 3: Set via the underlying spherical coordinates if available
+        if (vidControls.orbit.object && vidControls.orbit.object.position) {
+            vidControls.orbit.object.position.set(0, 0, vidControls.orbit.minDistance);
+        }
 
         let scope = this;
         // this.controls3d.orbit.on( .. ) does not work for custom events!
