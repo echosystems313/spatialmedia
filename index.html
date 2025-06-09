@@ -26,6 +26,13 @@
       text-align: center;
       box-sizing: border-box; /* Ensures padding is included in height calculations */
     }
+
+    .header{
+      margin: 0;
+      padding: 0;
+      height: 20vh;
+    }
+    
     h1 {
       font-size: 3rem;
       margin-bottom: 0;
@@ -88,11 +95,13 @@
   </style>
 </head>
 <body>
-  <h1>ECHOSYSTEMS</h1>
-  <p>"hovering"</p>
-  <div class="button-container">
-    <button onclick="init()">Load</button>
-    <!--<button onclick="stop()">Stop</button> -->
+  <div class="header">
+    <h1>ECHOSYSTEMS</h1>
+    <p>"hovering"</p>
+    <div class="button-container">
+      <button onclick="init()">Load</button>
+      <!--<button onclick="stop()">Stop</button> -->
+    </div>
   </div>
   <video-js
     id="hoast360-player"
