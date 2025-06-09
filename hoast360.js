@@ -1,5 +1,3 @@
-i dont see that anywhere in here:
-
 /*
  ==============================================================================
  This file is part of hoast360, the open-source, higher-order Ambisonics, 360
@@ -237,6 +235,9 @@ export class HOAST360 {
         let vidControls = this.videoPlayer.xr().controls3d;
         vidControls.orbit.minDistance = -700;
         vidControls.orbit.maxDistance = 200;
+
+        // Set initial zoom level to fully zoomed out
+        vidControls.orbit.currentDistance = vidControls.orbit.minDistance; // Fully zoomed out
 
         let scope = this;
         // this.controls3d.orbit.on( .. ) does not work for custom events!
