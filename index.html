@@ -88,19 +88,19 @@
    <button onclick="init()">Load</button>
    <button onclick="stop()">Stop</button>
  </div>
- <video-js
-   id="hoast360-player"
-   class="video-js vjs-fluid vjs-big-play-centered"
-   controls
-   preload="auto"
-   crossorigin="anonymous"
-   data-setup='{}'
- >
-   <p class="vjs-no-js">
-     To view this video please enable JavaScript, and consider upgrading to a web browser that
-     <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>.
-   </p>
- </video-js>
+<video-js
+  id="hoast360-player"
+  class="video-js vjs-fluid vjs-big-play-centered"
+  controls
+  preload="auto"
+  crossorigin="anonymous"
+  data-setup='{"controlBar": { "autoHide": false }}'
+>
+  <p class="vjs-no-js">
+    To view this video please enable JavaScript, and consider upgrading to a web browser that
+    <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>.
+  </p>
+</video-js>
  <script src="./dist/hoast360.bundle.js"></script>
  <script>
    var hoast360 = new HOAST360();
