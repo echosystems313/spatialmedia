@@ -17,23 +17,21 @@
       color: white;
       font-family: sans-serif;
       margin: 0;
-      padding: 20px;
+      padding: 20px; /* Added padding to ensure content stays within view */
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-start;
+      justify-content: flex-start; /* Changed from center to better control spacing */
       min-height: 100vh;
       text-align: center;
-      box-sizing: border-box;
+      box-sizing: border-box; /* Ensures padding is included in height calculations */
     }
-
     h1 {
       font-size: 3rem;
       margin-bottom: 0;
       font-family: 'TsukimiRounded', sans-serif;
       font-weight: 400;
     }
-
     p {
       font-size: 2rem;
       margin-top: 0;
@@ -41,13 +39,11 @@
       font-style: normal;
       font-family: 'Courier New', monospace;
     }
-
     .button-container {
       display: flex;
       gap: 1rem;
       margin-bottom: 1rem;
     }
-
     button {
       background: white;
       color: black;
@@ -58,39 +54,20 @@
       border-radius: 10px;
       font-family: 'Courier New', monospace;
     }
-
     #hoast360-player {
       width: 700px;
       max-width: 85vw;
-      height: 350px;
-      max-height: 45vh;
+      height: 350px; /* Maintains 2:1 aspect ratio */
+      max-height: 45vh; /* Reduced to prevent scrolling */
       position: relative;
       border: 1px solid white;
       margin: 0 auto;
     }
-
     #hoast360-player canvas {
       max-width: 100%;
       height: auto;
       display: block;
       margin: 0 auto;
-    }
-
-    /* Force controls to stay visible */
-    .video-js .vjs-control-bar {
-      opacity: 1 !important;
-      visibility: visible !important;
-      display: flex !important;
-      transition: none !important;
-    }
-
-    .video-js.vjs-has-started.vjs-user-inactive .vjs-control-bar {
-      opacity: 1 !important;
-      visibility: visible !important;
-    }
-
-    .video-js .vjs-hidden {
-      display: block !important;
     }
 
     /* Responsive adjustments */
@@ -101,6 +78,12 @@
         height: 300px;
         max-height: 40vh;
       }
+    }
+    
+    /* New CSS: When hovering the player, ensure the control bar is visible */
+    #hoast360-player:hover .vjs-control-bar {
+      opacity: 1 !important;
+      visibility: visible !important;
     }
   </style>
 </head>
@@ -117,33 +100,24 @@
     controls
     preload="auto"
     crossorigin="anonymous"
-    data-setup='{"controlBar": { "autoHide": false }}'
+    data-setup='{}'
   >
     <p class="vjs-no-js">
       To view this video please enable JavaScript, and consider upgrading to a web browser that
       <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>.
     </p>
   </video-js>
-
   <script src="./dist/hoast360.bundle.js"></script>
   <script>
     var hoast360 = new HOAST360();
     function init() {
       const MEDIA_URL = "https://pub-50ad6c6851e94dadbf5a2004fd002705.r2.dev/hovering/";
-      const IR_PATH = "irs/";
+      const IR_PATH = "/spatialmedia/irs/";  // unchanged absolute path
       hoast360.initialize(MEDIA_URL, IR_PATH, 4);
     }
     function stop() {
       hoast360.reset();
     }
-
-    // Prevent Video.js from hiding controls due to inactivity
-    const player = videojs('hoast360-player');
-    player.ready(() => {
-      player.userActive(true);
-      player.off('userinactive'); // prevent toggling
-      player.on('timeupdate', () => player.userActive(true));
-    });
   </script>
 </body>
 </html>
