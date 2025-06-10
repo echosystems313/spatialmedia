@@ -144,6 +144,40 @@
       width: 1px;
       height: 1px;
     }
+    .bios {
+      margin-top: 4rem;
+      max-width: 900px;
+      text-align: left;
+    }
+    .bio {
+      margin-bottom: 3rem;
+    }
+    .bio h3 {
+      font-size: 1.5rem;
+      font-family: 'Courier New', monospace;
+      font-weight: normal;
+      text-align: center;
+      margin: 0 0 1rem 0;
+    }
+    .bio ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      font-family: 'Courier New', monospace;
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+    .bio li {
+      margin-bottom: 0.5rem;
+      position: relative;
+      padding-left: 1rem;
+    }
+    .bio li:before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: white;
+    }
     video-js,
     #hoast360-player canvas {
       max-width: 100%;
@@ -196,6 +230,15 @@
       <div class="active-indicator" id="desert-indicator" style="display: none;">ACTIVE</div>
     </div>
     
+    <div class="piece-title" style="margin-top: 2rem;">"wahnabezee 7035" (2025) - maro kariya</div>
+    <div class="video-wrapper" id="wahnabezee-wrapper" onclick="loadVideo('wahnabezee')">
+      <div class="preview-overlay" id="wahnabezee-overlay">
+        <div class="preview-title">"wahnabezee 7035"</div>
+        <div class="play-button">▶</div>
+      </div>
+      <div class="active-indicator" id="wahnabezee-indicator" style="display: none;">ACTIVE</div>
+    </div>
+    
     <!-- Hidden HOAST360 player that moves to active wrapper -->
     <div class="hidden-player">
       <video-js
@@ -212,6 +255,33 @@
         </p>
       </video-js>
     </div>
+    
+    <div class="bios">
+      <div class="bio">
+        <h3>maro kariya</h3>
+        <ul>
+          <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</li>
+          <li>Vivamus orci lectus, placerat et rhoncus nec, interdum commodo massa. Sed ac ex maximus, cursus ipsum.</li>
+          <li>sodales odio. Sed in justo non tellus malesuada ultrices at nec nisl. Vivamus luctus leo vitae tellus vehicula mollis.</li>
+          <li>Aliquam erat volutpat. Ut massa sem, sollicitudin maximus dictum et, accumsan a risus. Vestibulum aliquam orci metus, vel accumsan eros feugiat efficitur.</li>
+          <li>Ut auctor in libero ac tempus.</li>
+          <li>Pellentesque ultricies nisi at arcu fringilla, semper fringilla nunc pellentesque. Mauris nec urna condimentum, sodales neque et, venenatis arcu.</li>
+          <li>Is pretty cool</li>
+        </ul>
+      </div>
+      
+      <div class="bio">
+        <h3>ethan marshall cohen</h3>
+        <ul>
+          <li>Curabitur sit amet ornare sem, eu facilisis mauris.</li>
+          <li>Proin egestas velit ac urna convallis, in posuere felis pulvinar. Maecenas a feugiat nibh, nec elementum justo. Nunc a dolor nec mauris pharetra faucibus vitae ac nulla.</li>
+          <li>Fusce sed iaculis orci. Donec vel suscipit libero.</li>
+          <li>Vestibulum sit amet felis nec mi convallis imperdiet.</li>
+          <li>Proin pharetra nec tortor non placerat. Donec elit urna, egestas elementum auctor at, venenatis sed nisi.</li>
+          <li>Mauris interdum libero vitae ex bibendum semper.</li>
+        </ul>
+      </div>
+    </div>
   </main>
   <script src="./dist/hoast360.bundle.js"></script>
   <script>
@@ -227,6 +297,10 @@
       desert: {
         url: "https://pub-50ad6c6851e94dadbf5a2004fd002705.r2.dev/desert/",
         title: '"desert" (2025) - maro kariya x ethan marshall cohen'
+      },
+      wahnabezee: {
+        url: "https://pub-50ad6c6851e94dadbf5a2004fd002705.r2.dev/wahnabezee_7035/",
+        title: '"wahnabezee 7035" (2025) - maro kariya'
       }
     };
     
