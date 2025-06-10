@@ -17,21 +17,23 @@
       color: white;
       font-family: sans-serif;
       margin: 0;
-      padding: 20px; /* Added padding to ensure content stays within view */
+      padding: 20px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-start; /* Changed from center to better control spacing */
+      justify-content: flex-start;
       min-height: 100vh;
       text-align: center;
-      box-sizing: border-box; /* Ensures padding is included in height calculations */
+      box-sizing: border-box;
     }
+
     h1 {
       font-size: 3rem;
       margin-bottom: 0;
       font-family: 'TsukimiRounded', sans-serif;
       font-weight: 400;
     }
+
     p {
       font-size: 2rem;
       margin-top: 0;
@@ -39,30 +41,17 @@
       font-style: normal;
       font-family: 'Courier New', monospace;
     }
-    .button-container {
-      display: flex;
-      gap: 1rem;
-      margin-bottom: 1rem;
-    }
-    button {
-      background: white;
-      color: black;
-      border: none;
-      padding: 0.75em 1.5em;
-      font-size: 1em;
-      cursor: pointer;
-      border-radius: 10px;
-      font-family: 'Courier New', monospace;
-    }
+
     #hoast360-player {
       width: 700px;
       max-width: 85vw;
-      height: 350px; /* Maintains 2:1 aspect ratio */
-      max-height: 45vh; /* Reduced to prevent scrolling */
+      height: 350px;
+      max-height: 45vh;
       position: relative;
       border: 1px solid white;
       margin: 0 auto;
     }
+
     #hoast360-player canvas {
       max-width: 100%;
       height: auto;
@@ -70,7 +59,6 @@
       margin: 0 auto;
     }
 
-    /* Responsive adjustments */
     @media (max-height: 700px) {
       h1 { font-size: 2.5rem; }
       p { font-size: 1.75rem; }
@@ -79,8 +67,7 @@
         max-height: 40vh;
       }
     }
-    
-    /* New CSS: When hovering the player, ensure the control bar is visible */
+
     #hoast360-player:hover .vjs-control-bar {
       opacity: 1 !important;
       visibility: visible !important;
@@ -90,10 +77,7 @@
 <body>
   <h1>ECHOSYSTEMS</h1>
   <p>"hovering"</p>
-  <div class="button-container">
-    <button onclick="init()">Load</button>
-    <!--<button onclick="stop()">Stop</button> -->
-  </div>
+
   <video-js
     id="hoast360-player"
     class="video-js vjs-fluid vjs-big-play-centered"
@@ -107,17 +91,15 @@
       <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>.
     </p>
   </video-js>
+
   <script src="./dist/hoast360.bundle.js"></script>
   <script>
-    var hoast360 = new HOAST360();
-    function init() {
+    window.onload = function () {
+      const hoast360 = new HOAST360();
       const MEDIA_URL = "https://pub-50ad6c6851e94dadbf5a2004fd002705.r2.dev/hovering/";
-      const IR_PATH = "/spatialmedia/irs/";  // unchanged absolute path
+      const IR_PATH = "/spatialmedia/irs/";
       hoast360.initialize(MEDIA_URL, IR_PATH, 4);
-    }
-    function stop() {
-      hoast360.reset();
-    }
+    };
   </script>
 </body>
 </html>
