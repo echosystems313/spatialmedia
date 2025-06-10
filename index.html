@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
   <meta name="description" content="ECHOSYSTEMS: immersive audiovisual work by maro kariya and ethan marshall cohen." />
-  <title>ECHOSYSTEMS — maro kariya x ethan marshall cohen</title>
+  <title>ECHOSYSTEMS — hovering / desert</title>
 
   <link href="https://vjs.zencdn.net/7.20.3/video-js.css" rel="stylesheet" />
 
@@ -41,16 +41,17 @@
     }
 
     h2 {
-      font-size: 2rem;
+      font-size: 1.5rem;
       font-family: 'Courier New', monospace;
       font-weight: normal;
-      margin: 0.5rem 0 1.5rem;
+      margin: 2rem 0 0.5rem;
     }
 
     main {
       width: 100%;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
+      align-items: center;
     }
 
     .video-wrapper {
@@ -60,10 +61,11 @@
       max-height: 45vh;
       border: 1px solid white;
       position: relative;
+      margin-bottom: 2rem;
     }
 
     video-js,
-    #hoast360-player canvas {
+    .video-wrapper canvas {
       max-width: 100%;
       height: auto;
       display: block;
@@ -71,14 +73,13 @@
 
     @media (max-height: 700px) {
       h1 { font-size: 2.5rem; }
-      h2 { font-size: 1.75rem; }
+      h2 { font-size: 1.25rem; }
       .video-wrapper {
         height: 300px;
         max-height: 40vh;
       }
     }
 
-    /* Keep control bar visible on hover */
     .video-wrapper:hover .vjs-control-bar {
       opacity: 1 !important;
       visibility: visible !important;
@@ -92,30 +93,60 @@
   </header>
 
   <main>
-    <div class="video-wrapper">
-      <video-js
-        id="hoast360-player"
-        class="video-js vjs-fluid vjs-big-play-centered"
-        controls
-        preload="auto"
-        crossorigin="anonymous"
-        data-setup='{}'
-      >
-        <p class="vjs-no-js">
-          To view this video please enable JavaScript, and consider upgrading to a web browser that
-          <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>.
-        </p>
-      </video-js>
-    </div>
+    <section>
+      <h2>"hovering" (2025)</h2>
+      <div class="video-wrapper">
+        <video-js
+          id="player-hovering"
+          class="video-js vjs-fluid vjs-big-play-centered"
+          controls
+          preload="auto"
+          crossorigin="anonymous"
+          data-setup='{}'
+        >
+          <p class="vjs-no-js">
+            Please enable JavaScript and upgrade your browser to view this video.
+          </p>
+        </video-js>
+      </div>
+    </section>
+
+    <section>
+      <h2>"desert" (2025)</h2>
+      <div class="video-wrapper">
+        <video-js
+          id="player-desert"
+          class="video-js vjs-fluid vjs-big-play-centered"
+          controls
+          preload="auto"
+          crossorigin="anonymous"
+          data-setup='{}'
+        >
+          <p class="vjs-no-js">
+            Please enable JavaScript and upgrade your browser to view this video.
+          </p>
+        </video-js>
+      </div>
+    </section>
   </main>
 
   <script src="./dist/hoast360.bundle.js"></script>
   <script>
     window.onload = () => {
-      const hoast360 = new HOAST360();
-      const MEDIA_URL = "https://pub-50ad6c6851e94dadbf5a2004fd002705.r2.dev/hovering/";
-      const IR_PATH = "/spatialmedia/irs/";
-      hoast360.initialize(MEDIA_URL, IR_PATH, 4);
+      const hoastHovering = new HOAST360('player-hovering');
+      const hoastDesert = new HOAST360('player-desert');
+
+      hoastHovering.initialize(
+        "https://pub-50ad6c6851e94dadbf5a2004fd002705.r2.dev/hovering/",
+        "/spatialmedia/irs/",
+        4
+      );
+
+      hoastDesert.initialize(
+        "https://pub-50ad6c6851e94dadbf5a2004fd002705.r2.dev/desert/",
+        "/spatialmedia/irs/",
+        4
+      );
     };
   </script>
 </body>
