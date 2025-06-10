@@ -14,7 +14,7 @@
     }
     body {
       margin: 0;
-      padding: 20px;
+      padding: 20px 20px 60px 20px;
       background-color: black;
       color: white;
       font-family: sans-serif;
@@ -110,7 +110,7 @@
         controls
         preload="auto"
         crossorigin="anonymous"
-        data-setup='{}'
+        data-setup='{"fluid": true}'
       >
         <p class="vjs-no-js">
           To view this video please enable JavaScript, and consider upgrading to a web browser that
@@ -125,9 +125,9 @@
         id="hoast360-player-2"
         class="video-js vjs-fluid vjs-big-play-centered"
         controls
-        preload="auto"
+        preload="none"
         crossorigin="anonymous"
-        data-setup='{}'
+        data-setup='{"fluid": true}'
       >
         <p class="vjs-no-js">
           To view this video please enable JavaScript, and consider upgrading to a web browser that
@@ -138,18 +138,67 @@
   </main>
   <script src="./dist/hoast360.bundle.js"></script>
   <script>
-    window.onload = () => {
-      // Initialize first video
-      const hoast360_1 = new HOAST360();
-      const MEDIA_URL_1 = "https://pub-50ad6c6851e94dadbf5a2004fd002705.r2.dev/hovering/";
-      const IR_PATH_1 = "/spatialmedia/irs/";
-      hoast360_1.initialize(MEDIA_URL_1, IR_PATH_1, 4, "hoast360-player");
+    let hoast360;
+    let currentPlayer = null;
+    
+    const videos = {
+      'hoast360-player': {
+        title: 'hovering',
+        mediaUrl: 'https://pub-50ad6c6851e94dadbf5a2004fd002705.r2.dev/hovering/',
+        irPath: '/spatialmedia/irs/'
+      },
+      'hoast360-player-2': {
+        title: 'desert',
+        mediaUrl: 'https://pub-50ad6c6851e94dadbf5a2004fd002705.r2.dev/desert/',
+        irPath: '/spatialmedia/irs/'
+      }
+    };
+
+    function initializeVideo(playerId) {
+      const video = videos[playerId];
+      if (!video) return;
       
-      // Initialize second video
-      const hoast360_2 = new HOAST360();
-      const MEDIA_URL_2 = "https://pub-50ad6c6851e94dadbf5a2004fd002705.r2.dev/desert/";
-      const IR_PATH_2 = "/spatialmedia/irs/";
-      hoast360_2.initialize(MEDIA_URL_2, IR_PATH_2, 4, "hoast360-player-2");
+      // Reset previous instance if exists
+      if (hoast360) {
+        hoast360.reset();
+      }
+      
+      // Pause other player if active
+      if (currentPlayer && currentPlayer !== playerId) {
+        const otherPlayer = videojs(currentPlayer);
+        if (otherPlayer && !otherPlayer.paused()) {
+          otherPlayer.pause();
+        }
+      }
+      
+      // Hide other player, show current one
+      Object.keys(videos).forEach(id => {
+        const playerElement = document.getElementById(id);
+        if (playerElement) {
+          playerElement.style.display = id === playerId ? 'block' : 'none';
+        }
+      });
+      
+      // Initialize HOAST360 with the selected video
+      hoast360 = new HOAST360();
+      hoast360.initialize(video.mediaUrl, video.irPath, 4);
+      currentPlayer = playerId;
+    }
+
+    window.onload = () => {
+      // Set up click handlers for play buttons
+      Object.keys(videos).forEach(playerId => {
+        const player = videojs(playerId);
+        
+        player.ready(() => {
+          player.on('play', () => {
+            initializeVideo(playerId);
+          });
+        });
+      });
+      
+      // Initially show only the first player
+      initializeVideo('hoast360-player');
     };
   </script>
 </body>
