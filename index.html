@@ -70,7 +70,8 @@
       position: relative;
     }
     video-js,
-    #hoast360-player canvas {
+    #hoast360-player canvas,
+    #hoast360-player-2 canvas {
       max-width: 100%;
       height: auto;
       display: block;
@@ -139,40 +140,67 @@
   </main>
   <script src="./dist/hoast360.bundle.js"></script>
   <script>
-    let hoast360;
-    let isInitialized = false;
+    let hoast360Player1;
+    let hoast360Player2;
+    let isPlayer1Initialized = false;
+    let isPlayer2Initialized = false;
     
-    function loadVideo(mediaUrl, irPath) {
+    function loadVideo1(mediaUrl, irPath) {
       // Reset if already initialized
-      if (isInitialized && hoast360) {
-        hoast360.reset();
+      if (isPlayer1Initialized && hoast360Player1) {
+        hoast360Player1.reset();
       }
       
-      // Initialize with new video
-      hoast360 = new HOAST360();
-      hoast360.initialize(mediaUrl, irPath, 4);
-      isInitialized = true;
+      // Initialize with new video for player 1
+      hoast360Player1 = new HOAST360();
+      hoast360Player1.initialize(mediaUrl, irPath, 4, 'hoast360-player');
+      isPlayer1Initialized = true;
+      
+      // Auto-play after initialization
+      setTimeout(() => {
+        if (hoast360Player1 && hoast360Player1.player) {
+          hoast360Player1.player.play();
+        }
+      }, 500);
+    }
+
+    function loadVideo2(mediaUrl, irPath) {
+      // Reset if already initialized
+      if (isPlayer2Initialized && hoast360Player2) {
+        hoast360Player2.reset();
+      }
+      
+      // Initialize with new video for player 2
+      hoast360Player2 = new HOAST360();
+      hoast360Player2.initialize(mediaUrl, irPath, 4, 'hoast360-player-2');
+      isPlayer2Initialized = true;
+      
+      // Auto-play after initialization
+      setTimeout(() => {
+        if (hoast360Player2 && hoast360Player2.player) {
+          hoast360Player2.player.play();
+        }
+      }, 500);
     }
 
     window.onload = () => {
-      // Default load hovering video
-      loadVideo("https://pub-50ad6c6851e94dadbf5a2004fd002705.r2.dev/hovering/", "/spatialmedia/irs/");
-      
       // Add click handlers to the big play buttons
       setTimeout(() => {
         // Handler for first video (hovering)
         const firstPlayer = document.querySelector('#hoast360-player .vjs-big-play-button');
         if (firstPlayer) {
-          firstPlayer.addEventListener('click', () => {
-            loadVideo("https://pub-50ad6c6851e94dadbf5a2004fd002705.r2.dev/hovering/", "/spatialmedia/irs/");
+          firstPlayer.addEventListener('click', (e) => {
+            e.preventDefault();
+            loadVideo1("https://pub-50ad6c6851e94dadbf5a2004fd002705.r2.dev/hovering/", "/spatialmedia/irs/");
           });
         }
         
         // Handler for second video (desert)
         const secondPlayer = document.querySelector('#hoast360-player-2 .vjs-big-play-button');
         if (secondPlayer) {
-          secondPlayer.addEventListener('click', () => {
-            loadVideo("https://pub-50ad6c6851e94dadbf5a2004fd002705.r2.dev/desert/", "/spatialmedia/irs/");
+          secondPlayer.addEventListener('click', (e) => {
+            e.preventDefault();
+            loadVideo2("https://pub-50ad6c6851e94dadbf5a2004fd002705.r2.dev/desert/", "/spatialmedia/irs/");
           });
         }
       }, 1000);
